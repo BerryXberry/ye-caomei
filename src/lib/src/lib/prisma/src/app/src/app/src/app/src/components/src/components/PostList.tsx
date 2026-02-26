@@ -105,4 +105,93 @@ export default function PostList() {
   return (
     <div className="space-y-4">
       {posts.length === 0 ? (
-        <div class
+        <div className="text-center py-12 text-gray-500">
+          还没有帖子，来发第一条吧！
+        </div>
+      ) : (
+        posts.map(post => (
+          <Link 
+            key={post.id} 
+            href={`/post/${post.id}`}
+            className="block bg-white rounded-xl p-6 border border-gray-200 hover:border-pink-300 hover:shadow-md transition-all"
+          >
+            {/* 标题 */}
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+              {post.title}
+            </h3>
+
+            {/* 内容预览 */}
+            <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+              {post.content}
+            </p>
+
+            {/* 股票标签 */}
+            {post.stockCode && (
+              <div className="flex items-center gap-2 mb-3">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-pink-50 to-orange-50 text-pink-700">
+                  📈 {post.stockCode} {post.stockName}
+                </span>
+              </div>
+            )}
+
+            {/* 标签 */}
+            {post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {post.tags.map(tag => (
+                  <span 
+                    key={tag}
+                    className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* 底部信息 */}
+            <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center gap-4">
+                <span>{post.author.name || '匿名用户'}</span>
+                <span>{formatTime(post.createdAt)}</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1">
+                  👁 {post.views}
+                </span>
+                <span className="flex items-center gap-1">
+                  💬 {post._count.comments}
+                </span>
+                <span className="flex items-center gap-1">
+                  👍 {post._count.likes}
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))
+      )}
+
+      {/* 分页 */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex justify-center gap-2 pt-6">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-4 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            上一页
+          </button>
+          <span className="px-4 py-2 text-gray-600">
+            {page} / {pagination.totalPages}
+          </span>
+          <button
+            onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
+            disabled={page === pagination.totalPages}
+            className="px-4 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          >
+            下一页
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
